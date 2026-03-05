@@ -7,40 +7,40 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import accuracy_score
 # -----------------------------
-# Load Dataset
+# Load Cybersecurity Dataset
 # -----------------------------
-csv_path = "network_traffic_data.csv"   # Update with dataset path
-df = pd.read_csv(csv_path)
+df = pd.read_csv("cybersecurity.csv")
+# -----------------------------
+# Data Preprocessing
+# -----------------------------
 # Remove missing values
 df = df.dropna()
-# Shuffle dataset
-df = df.sample(frac=1, random_state=42)
-# -----------------------------
 # Encode categorical columns
-# -----------------------------
 label_encoders = {}
 for column in df.columns:
-    if df[column].dtype == 'object':
+    if df[column].dtype == "object":
         le = LabelEncoder()
         df[column] = le.fit_transform(df[column])
         label_encoders[column] = le
 # -----------------------------
-# Split features and labels
+# Features and Target
 # -----------------------------
-X = df.iloc[:, :-1]
-y = df.iloc[:, -1]
+# Using "label" column as target
+X = df.drop("label", axis=1)
+y = df["label"]
 # Normalize features
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 # -----------------------------
-# Store accuracies
+# Accuracy storage
 # -----------------------------
-rf_accuracies = []
-dt_accuracies = []
-svm_accuracies = []
-nb_accuracies = []
-knn_accuracies = []
+rf_scores = []
+dt_scores = []
+svm_scores = []
+nb_scores = []
+knn_scores = []
 # -----------------------------
 # Run 10 iterations
 # -----------------------------
@@ -49,40 +49,40 @@ for i in range(10):
         X, y, test_size=0.5, random_state=i
     )
     # Decision Tree
-    dt_model = DecisionTreeClassifier(max_depth=5, random_state=i)
-    dt_model.fit(X_train, y_train)
-    dt_accuracy = np.random.uniform(76, 88)
-    dt_accuracies.append(dt_accuracy)
+    dt = DecisionTreeClassifier(max_depth=5)
+    dt.fit(X_train, y_train)
+    dt_pred = dt.predict(X_test)
+    dt_scores.append(accuracy_score(y_test, dt_pred))
     # SVM
-    svm_model = SVC()
-    svm_model.fit(X_train, y_train)
-    svm_accuracy = np.random.uniform(83, 87)
-    svm_accuracies.append(svm_accuracy)
+    svm = SVC()
+    svm.fit(X_train, y_train)
+    svm_pred = svm.predict(X_test)
+    svm_scores.append(accuracy_score(y_test, svm_pred))
     # Naive Bayes
-    nb_model = GaussianNB()
-    nb_model.fit(X_train, y_train)
-    nb_accuracy = np.random.uniform(83, 87)
-    nb_accuracies.append(nb_accuracy)
+    nb = GaussianNB()
+    nb.fit(X_train, y_train)
+    nb_pred = nb.predict(X_test)
+    nb_scores.append(accuracy_score(y_test, nb_pred))
     # KNN
-    knn_model = KNeighborsClassifier(n_neighbors=10)
-    knn_model.fit(X_train, y_train)
-    knn_accuracy = np.random.uniform(83, 87)
-    knn_accuracies.append(knn_accuracy)
+    knn = KNeighborsClassifier(n_neighbors=10)
+    knn.fit(X_train, y_train)
+    knn_pred = knn.predict(X_test)
+    knn_scores.append(accuracy_score(y_test, knn_pred))
     # Random Forest
-    rf_model = RandomForestClassifier(n_estimators=100)
-    rf_model.fit(X_train, y_train)
-    rf_accuracy = np.random.uniform(93, 97)
-    rf_accuracies.append(rf_accuracy)
+    rf = RandomForestClassifier(n_estimators=100)
+    rf.fit(X_train, y_train)
+    rf_pred = rf.predict(X_test)
+    rf_scores.append(accuracy_score(y_test, rf_pred))
 # -----------------------------
 # Print Results
 # -----------------------------
-print("\nDecision Tree Accuracies:", dt_accuracies)
-print("Average Decision Tree Accuracy:", np.mean(dt_accuracies))
-print("\nSVM Accuracies:", svm_accuracies)
-print("Average SVM Accuracy:", np.mean(svm_accuracies))
-print("\nNaive Bayes Accuracies:", nb_accuracies)
-print("Average Naive Bayes Accuracy:", np.mean(nb_accuracies))
-print("\nKNN Accuracies:", knn_accuracies)
-print("Average KNN Accuracy:", np.mean(knn_accuracies))
-print("\nRandom Forest Accuracies:", rf_accuracies)
-print("Average Random Forest Accuracy:", np.mean(rf_accuracies))
+print("\nDecision Tree Accuracies:", dt_scores)
+print("Average Decision Tree Accuracy:", np.mean(dt_scores))
+print("\nSVM Accuracies:", svm_scores)
+print("Average SVM Accuracy:", np.mean(svm_scores))
+print("\nNaive Bayes Accuracies:", nb_scores)
+print("Average Naive Bayes Accuracy:", np.mean(nb_scores))
+print("\nKNN Accuracies:", knn_scores)
+print("Average KNN Accuracy:", np.mean(knn_scores))
+print("\nRandom Forest Accuracies:", rf_scores)
+print("Average Random Forest Accuracy:", np.mean(rf_scores))
