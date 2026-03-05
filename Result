@@ -1,0 +1,5 @@
+Average Decision Tree Accuracy: ~80%
+Average SVM Accuracy: ~85%
+Average Naive Bayes Accuracy: ~86%
+Average KNN Accuracy: ~85%
+Average Random Forest Accuracy: ~93%
